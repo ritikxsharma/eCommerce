@@ -7,7 +7,7 @@ const ProductModel = require('../models/productModel')
 const getAllProducts = asyncHandler(async(req, res) => {
 
     const pageSize = process.env.PAGINATION_SIZE
-    const page = Number(req.query.pageNumber || 1)
+    const page = Number(req.query.pageNumber || 1)   
 
     const keyword = req.query.keyword ? {
         name: {
@@ -15,10 +15,10 @@ const getAllProducts = asyncHandler(async(req, res) => {
             $options: 'i'
         }
     } : {}
-
+   
     const count = await ProductModel.countDocuments({...keyword})
 
-    const products = await ProductModel.find({}).limit(pageSize).skip(pageSize * (page - 1))
+    const products = await ProductModel.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1))
     if(products){
         res.json({products, page, pages: Math.ceil(count / pageSize)})
     }else{
